@@ -1,0 +1,83 @@
+const series = [
+  [ // سلسلة 1
+    {
+      question: "شنو كتعني هاد العلامة؟",
+      choices: ["ممنوع المرور", "طريق ديال جهة وحدة", "علامة ديال الخطر"],
+      answer: 0
+    },
+    {
+      question: "فغياب ديال العلامات، شكون عندو السبيقة؟",
+      choices: ["لي فاليسر", "لي فاليمين", "لي داير ضو كحل"],
+      answer: 1
+    }
+  ],
+  [ // سلسلة 2
+    {
+      question: "شنو ندير ملي يضوي الضو البرتقالي؟",
+      choices: ["نوقف إلا قدرت", "نزيد", "ماشي مشكل"],
+      answer: 0
+    },
+    {
+      question: "فين ممنوع توقف؟",
+      choices: ["قدام ممر الراجلين", "وسط الشانطي", "تحت الطوموبيل"],
+      answer: 0
+    }
+  ]
+];
+
+let currentSeries = 0;
+let currentQuestion = 0;
+let score = 0;
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function loadSeries() {
+  currentSeries = parseInt(document.getElementById('seriesSelect').value);
+  currentQuestion = 0;
+  score = 0;
+  document.getElementById('result').innerHTML = "";
+  showQuestion();
+}
+
+function showQuestion() {
+  const container = document.getElementById('question-container');
+  const q = series[currentSeries][currentQuestion];
+
+  let html = `<p>🟢 ${q.question}</p>`;
+  q.choices.forEach((choice, i) => {
+    html += `<div><input type="radio" name="answer" value="${i}"> ${choice}</div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function nextQuestion() {
+  const selected = document.querySelector('input[name="answer"]:checked');
+  if (!selected) {
+    alert("⛔ اختار جواب من فضلك!");
+    return;
+  }
+
+  if (parseInt(selected.value) === series[currentSeries][currentQuestion].answer) {
+    score++;
+  }
+
+  currentQuestion++;
+  if (currentQuestion < series[currentSeries].length) {
+    showQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById('question-container').innerHTML = "";
+  document.getElementById('result').innerHTML = `✅ نتيجتك: ${score} / ${series[currentSeries].length}`;
+}
+
+window.onload = () => {
+  loadSeries();
+};
